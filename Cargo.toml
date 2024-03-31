@@ -1,0 +1,8 @@
+[package]
+name = "local_llm_rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust-bert = { version = "0.22.0", features = ["all-tests", "download-libtorch"] }
+tch = "0.14.0"
