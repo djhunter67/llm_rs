@@ -1,13 +1,11 @@
 use std::path::PathBuf;
 
+use log::error;
 use rust_bert::{
-    gpt_j::{GptJConfigResources, GptJMergesResources, GptJVocabResources},
-    // gpt_neo::{GptNeoConfigResources, GptNeoMergesResources, GptNeoVocabResources},
-    pipelines::{
+    gpt2::{Gpt2ConfigResources, Gpt2MergesResources, Gpt2VocabResources}, pipelines::{
         common::{ModelResource, ModelType},
         text_generation::{TextGenerationConfig, TextGenerationModel},
-    },
-    resources::{LocalResource, RemoteResource},
+    }, resources::{LocalResource, RemoteResource}
 };
 
 fn main() {
@@ -26,29 +24,24 @@ fn main() {
     println!("\nMORE CUDA INFO: {more_cuda_info:?}\n");
 
     let model_resource = Box::new(LocalResource {
-        // local_path: PathBuf::from("/home/djhunter67/.BUILDS/rust_model.ot"),
-        // local_path: PathBuf::from("/home/djhunter67/.BUILDS/rust_model_1_3B.ot"),
-        local_path: PathBuf::from("/home/djhunter67/Downloads/model_gptj-6B.ot"),
+        local_path: PathBuf::from("/home/djhunter67/Downloads/model_gpt2.ot"),
     });
-
+    
     let config_resource = Box::new(RemoteResource::from_pretrained(
-        // GptNeoConfigResources::GPT_NEO_1_3B,
-        GptJConfigResources::GPT_J_6B,
+        Gpt2ConfigResources::GPT2
     ));
-
+    
     let vocab_resource = Box::new(RemoteResource::from_pretrained(
-        // GptNeoVocabResources::GPT_NEO_1_3B,
-        GptJVocabResources::GPT_J_6B,
+        Gpt2VocabResources::GPT2
     ));
 
     let merges_resource = Box::new(RemoteResource::from_pretrained(
-        // GptNeoMergesResources::GPT_NEO_1_3B,
-        GptJMergesResources::GPT_J_6B,
+        Gpt2MergesResources::GPT2
     ));
 
     let generation_config = TextGenerationConfig {
         // model_type: ModelType::GPTNeo,
-        model_type: ModelType::GPTJ,
+        model_type: ModelType::GPT2,
         model_resource: ModelResource::Torch(model_resource.clone()),
         config_resource: config_resource.clone(),
         vocab_resource: vocab_resource.clone(),
@@ -79,7 +72,11 @@ fn main() {
                 device: tch::Device::Cuda(1),
                 ..Default::default()
             })
-            .unwrap()
+		.unwrap_or_else(|_| {
+		    error!("Unable to process error");
+		    // exit the program
+		    std::process::exit(1);
+})
         }
     };
 
@@ -100,3 +97,5 @@ fn main() {
         }
     }
 }
+
+

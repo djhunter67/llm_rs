@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+log = "0.4.21"
 rust-bert = { version = "0.22.0", features = ["all-tests", "download-libtorch"] }
+simplelog = "0.12.2"
 tch = "0.14.0"
