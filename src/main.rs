@@ -27,13 +27,21 @@ fn main() {
     // local_path: PathBuf::from("/home/djhunter67/Downloads/model_gpt2.ot"),
     // });
 
-    let model_resource = Box::new(RemoteResource::from_pretrained(Gpt2ModelResources::GPT2));
+    let model_resource = Box::new(RemoteResource::from_pretrained(
+        Gpt2ModelResources::GPT2_LARGE,
+    ));
 
-    let config_resource = Box::new(RemoteResource::from_pretrained(Gpt2ConfigResources::GPT2));
+    let config_resource = Box::new(RemoteResource::from_pretrained(
+        Gpt2ConfigResources::GPT2_LARGE,
+    ));
 
-    let vocab_resource = Box::new(RemoteResource::from_pretrained(Gpt2VocabResources::GPT2));
+    let vocab_resource = Box::new(RemoteResource::from_pretrained(
+        Gpt2VocabResources::GPT2_LARGE,
+    ));
 
-    let merges_resource = Box::new(RemoteResource::from_pretrained(Gpt2MergesResources::GPT2));
+    let merges_resource = Box::new(RemoteResource::from_pretrained(
+        Gpt2MergesResources::GPT2_LARGE,
+    ));
 
     let generation_config = TextGenerationConfig {
         // model_type: ModelType::GPTNeo,
@@ -42,9 +50,9 @@ fn main() {
         config_resource: config_resource.clone(),
         vocab_resource: vocab_resource.clone(),
         merges_resource: Some(merges_resource.clone()),
-        num_beams: 2,
+        num_beams: 7,
         no_repeat_ngram_size: 2,
-        max_length: Some(500),
+        max_length: Some(5000),
         device: tch::Device::Cuda(0),
         // device: tch::Device::Cpu,
         ..Default::default()
