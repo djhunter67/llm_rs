@@ -1,11 +1,11 @@
-use std::path::PathBuf;
-
 use log::error;
 use rust_bert::{
-    gpt2::{Gpt2ConfigResources, Gpt2MergesResources, Gpt2VocabResources}, pipelines::{
+    gpt2::{Gpt2ConfigResources, Gpt2MergesResources, Gpt2ModelResources, Gpt2VocabResources},
+    pipelines::{
         common::{ModelResource, ModelType},
         text_generation::{TextGenerationConfig, TextGenerationModel},
-    }, resources::{LocalResource, RemoteResource}
+    },
+    resources::RemoteResource,
 };
 
 fn main() {
@@ -23,21 +23,17 @@ fn main() {
 
     println!("\nMORE CUDA INFO: {more_cuda_info:?}\n");
 
-    let model_resource = Box::new(LocalResource {
-        local_path: PathBuf::from("/home/djhunter67/Downloads/model_gpt2.ot"),
-    });
-    
-    let config_resource = Box::new(RemoteResource::from_pretrained(
-        Gpt2ConfigResources::GPT2
-    ));
-    
-    let vocab_resource = Box::new(RemoteResource::from_pretrained(
-        Gpt2VocabResources::GPT2
-    ));
+    // let model_resource = Box::new(LocalResource {
+    // local_path: PathBuf::from("/home/djhunter67/Downloads/model_gpt2.ot"),
+    // });
 
-    let merges_resource = Box::new(RemoteResource::from_pretrained(
-        Gpt2MergesResources::GPT2
-    ));
+    let model_resource = Box::new(RemoteResource::from_pretrained(Gpt2ModelResources::GPT2));
+
+    let config_resource = Box::new(RemoteResource::from_pretrained(Gpt2ConfigResources::GPT2));
+
+    let vocab_resource = Box::new(RemoteResource::from_pretrained(Gpt2VocabResources::GPT2));
+
+    let merges_resource = Box::new(RemoteResource::from_pretrained(Gpt2MergesResources::GPT2));
 
     let generation_config = TextGenerationConfig {
         // model_type: ModelType::GPTNeo,
@@ -72,11 +68,11 @@ fn main() {
                 device: tch::Device::Cuda(1),
                 ..Default::default()
             })
-		.unwrap_or_else(|_| {
-		    error!("Unable to process error");
-		    // exit the program
-		    std::process::exit(1);
-})
+            .unwrap_or_else(|_| {
+                error!("Unable to process error");
+                // exit the program
+                std::process::exit(1);
+            })
         }
     };
 
@@ -97,5 +93,3 @@ fn main() {
         }
     }
 }
-
-
