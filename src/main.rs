@@ -11,24 +11,24 @@ use rust_bert::{
 };
 
 fn main() {
-    // let cuda = tch::Cuda::is_available();
+    let cuda = tch::Cuda::is_available();
 
-    // println!("\nCUDA?: {cuda}\n");
+    println!("\nCUDA?: {cuda}\n");
 
-    // let cuda_info = tch::Cuda::device_count();
+    let cuda_info = tch::Cuda::device_count();
 
-    // println!("\nNUM OF CUDA DEVICES: {cuda_info}\n");
+    println!("\nNUM OF CUDA DEVICES: {cuda_info}\n");
 
     // let more_cuda_info = tch::Device::Cuda(1);
 
-    // let more_cuda_info = tch::Device::Cuda(0);
+    let more_cuda_info = tch::Device::Cuda(0);
 
-    // println!("\nMORE CUDA INFO: {more_cuda_info:?}\n");
+    println!("\nMORE CUDA INFO: {more_cuda_info:?}\n");
 
     let model_resource = Box::new(LocalResource {
         // local_path: PathBuf::from("/home/djhunter67/.BUILDS/rust_model.ot"),
         // local_path: PathBuf::from("/home/djhunter67/.BUILDS/rust_model_1_3B.ot"),
-        local_path: PathBuf::from("/home/djhunter67/.BUILDS/model_gptj-6B.ot"),
+        local_path: PathBuf::from("/home/djhunter67/Downloads/model_gptj-6B.ot"),
     });
 
     let config_resource = Box::new(RemoteResource::from_pretrained(
@@ -57,6 +57,7 @@ fn main() {
         no_repeat_ngram_size: 2,
         max_length: Some(500),
         device: tch::Device::Cuda(0),
+        // device: tch::Device::Cpu,
         ..Default::default()
     };
 
@@ -74,7 +75,8 @@ fn main() {
                 num_beams: 2,
                 no_repeat_ngram_size: 2,
                 max_length: Some(500),
-                device: tch::Device::Cpu,
+                // device: tch::Device::Cpu,
+                device: tch::Device::Cuda(1),
                 ..Default::default()
             })
             .unwrap()
